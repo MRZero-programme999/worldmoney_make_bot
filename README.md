@@ -1,0 +1,1 @@
+# worldmoney_make_bot
