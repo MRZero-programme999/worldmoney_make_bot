@@ -1,0 +1,262 @@
+<!DOCTYPE html><html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>World Money Make</title><script src="https://telegram.org/js/telegram-web-app.js"></script><style>
+body{
+margin:0;
+font-family:Arial;
+background:#0f0f0f;
+color:white;
+transition:0.3s;
+}
+
+/* THEMES */
+.light{background:#f5f5f5;color:black;}
+.greenTheme{background:#001f1f;color:#00ffcc;}
+
+/* HEADER */
+.header{
+padding:15px;
+text-align:center;
+background:linear-gradient(45deg,#00c853,#ff6d00);
+font-weight:bold;
+}
+
+/* TOP */
+.topbar{
+display:flex;
+justify-content:space-between;
+padding:10px;
+}
+
+.box{
+background:#1e1e1e;
+padding:10px;
+border-radius:10px;
+width:45%;
+text-align:center;
+}
+
+/* CARD */
+.card{
+background:#1e1e1e;
+margin:10px;
+padding:15px;
+border-radius:12px;
+}
+
+/* BUTTON */
+.btn{
+display:block;
+width:90%;
+margin:10px auto;
+padding:14px;
+border:none;
+border-radius:25px;
+color:white;
+font-size:16px;
+font-weight:bold;
+}
+
+.green{background:#00c853;}
+.orange{background:#ff6d00;}
+.blue{background:#2962ff;}
+
+/* WHEEL */
+.wheel{
+width:200px;
+height:200px;
+margin:20px auto;
+border-radius:50%;
+background:conic-gradient(red,green,blue,yellow,orange,red);
+transition:transform 3s;
+}
+
+/* MENU */
+.menu{
+position:fixed;
+bottom:0;
+width:100%;
+background:#111;
+display:flex;
+justify-content:space-around;
+padding:10px 0;
+}
+
+.menu button{
+background:none;
+border:none;
+color:white;
+}
+
+/* PAGE */
+.page{display:none;padding-bottom:80px;}
+.active{display:block;}
+</style></head><body><div class="header">BEST FIRE 🔥<br><small>by MD ABUBOKOR SIDDIQUE</small></div><!-- TOP --><div class="topbar">
+<div class="box">Points<br><span id="points">0</span></div>
+<div class="box">Balance<br>$<span id="balance">0</span></div>
+</div><!-- HOME --><div id="home" class="page active"><div class="card"><h3 id="user">Welcome Guest</h3></div><div class="card">
+🌍 Country: <span id="country">Loading...</span><br>
+🌐 IP: <span id="ip">Loading...</span>
+</div><div class="card">
+📱 Device<br><small id="device"></small>
+</div><div class="card">
+Ads Watched: <span id="ads">0</span>/10<br>
+Next Bonus: <span id="next">10</span>
+</div><button class="btn green" onclick="watchAd()">Watch Ad</button>
+
+</div><!-- SPIN PAGE --><div id="spinPage" class="page"><div class="card">
+<h3>🎰 Spin Wheel</h3><div id="wheel" class="wheel"></div><button class="btn orange" onclick="spin()">SPIN</button>
+
+</div></div><!-- BONUS --><div id="bonusPage" class="page">
+<div class="card">
+<h3>📊 Daily Bonus</h3>
+<p id="dailyStatus">Check bonus</p>
+<button class="btn blue" onclick="claimDaily()">Claim</button>
+</div>
+</div><!-- SETTINGS --><div id="settings" class="page"><div class="card">
+<h3>🎨 Theme</h3>
+<button class="btn blue" onclick="setTheme('dark')">Dark</button>
+<button class="btn green" onclick="setTheme('light')">Light</button>
+<button class="btn orange" onclick="setTheme('green')">Green</button>
+</div><div class="card">
+<h3>♻ Reset</h3>
+<button class="btn orange" onclick="resetData()">Reset</button>
+</div></div><!-- MENU --><div class="menu">
+<button onclick="showPage('home')">Home</button>
+<button onclick="showPage('spinPage')">Spin</button>
+<button onclick="showPage('bonusPage')">Bonus</button>
+<button onclick="showPage('settings')">Settings</button>
+</div><!-- MONETAG --><script src='//libtl.com/sdk.js' data-zone='10898672' data-sdk='show_10898672'></script><script>
+// TELEGRAM
+let tg = window.Telegram.WebApp;
+tg.expand();
+
+let username = tg.initDataUnsafe?.user?.first_name || "Guest";
+document.getElementById("user").innerText = "Welcome " + username;
+
+// DEVICE
+document.getElementById("device").innerText = navigator.userAgent;
+
+// COUNTRY FIX
+fetch("https://ipwho.is/")
+.then(r=>r.json())
+.then(d=>{
+document.getElementById("country").innerText = d.country;
+document.getElementById("ip").innerText = d.ip;
+})
+.catch(()=>{
+document.getElementById("country").innerText="Unknown";
+document.getElementById("ip").innerText="Blocked";
+});
+
+// DATA
+let points = localStorage.getItem("points")?parseFloat(localStorage.getItem("points")):0;
+let ads = localStorage.getItem("ads")?parseInt(localStorage.getItem("ads")):0;
+
+// UPDATE
+function update(){
+let balance = points/100;
+document.getElementById("points").innerText = points.toFixed(2);
+document.getElementById("balance").innerText = balance.toFixed(2);
+document.getElementById("ads").innerText = ads;
+document.getElementById("next").innerText = 10-(ads%10);
+localStorage.setItem("points",points);
+localStorage.setItem("ads",ads);
+}
+update();
+
+// PAGE
+function showPage(id){
+document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+document.getElementById(id).classList.add("active");
+}
+
+// SAFE AD
+function loadAd(){
+try{
+if(typeof show_10898672==="function"){
+show_10898672();
+return true;
+}
+}catch(e){}
+return false;
+}
+
+// WATCH AD
+function watchAd(){
+
+alert("Ad loading...");
+
+let ok = loadAd();
+
+if(ok){
+alert("Ad loaded, watch now");
+}else{
+alert("Ad failed, reward given");
+}
+
+ads++;
+points+=1.5;
+
+if(ads%10===0){
+alert("Click ad to get +5 bonus");
+points+=5;
+}
+
+update();
+}
+
+// SPIN
+function spin(){
+let wheel=document.getElementById("wheel");
+let deg=Math.floor(2000+Math.random()*2000);
+wheel.style.transform="rotate("+deg+"deg)";
+
+setTimeout(()=>{
+let r=Math.random();
+if(r<0.5){points+=2;alert("2 points");}
+else{points+=5;alert("5 points");}
+update();
+loadAd();
+},3000);
+}
+
+// DAILY BONUS
+function claimDaily(){
+let today=new Date().toDateString();
+let last=localStorage.getItem("daily");
+
+if(last===today){
+document.getElementById("dailyStatus").innerText="Already claimed";
+return;
+}
+
+points+=10;
+localStorage.setItem("daily",today);
+document.getElementById("dailyStatus").innerText="+10 claimed";
+update();
+}
+
+// THEME
+function setTheme(t){
+document.body.className="";
+if(t==="light")document.body.classList.add("light");
+if(t==="green")document.body.classList.add("greenTheme");
+localStorage.setItem("theme",t);
+}
+
+// LOAD THEME
+if(localStorage.getItem("theme")){
+setTheme(localStorage.getItem("theme"));
+}
+
+// RESET
+function resetData(){
+points=0;ads=0;
+localStorage.clear();
+update();
+}
+</script></body>
+</html>
